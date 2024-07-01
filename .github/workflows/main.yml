@@ -2,11 +2,11 @@ name: Action to build and publish the project as a nuget package to github packa
 
 on:
   push:
-    branches: [master]
+    branches: [main]
       
 jobs:
   build:
-    runs-on: ubuntu-latest    
+    runs-on: self-hosted
     outputs: 
       Version: ${{ steps.gitversion.outputs.SemVer }}
       CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }} 
@@ -43,7 +43,7 @@ jobs:
         path: bin/Release/ 
         
   release:
-    runs-on: ubuntu-latest    
+    runs-on: self-hosted    
     needs: build
     if: github.ref == 'refs/heads/master' # only run job if on the master branch   
     
