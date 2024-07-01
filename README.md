@@ -35,7 +35,7 @@ The package is designed to run on application startup.
 [An example project demonstrates how to use the package can be found here](https://github.com/danniwezz/SqlDbMigrator/tree/main/Example)
 
 ### Extension Method
-
+Example: [InfrastructureExtensions.cs](https://github.com/danniwezz/SqlDbMigrator/blob/main/Example/Infrastructure/InfrastructureExtensions.cs)
 ```csharp
 public static class InfrastructureExtensions
 {
@@ -57,7 +57,7 @@ public static class InfrastructureExtensions
 
 # Usage
 
-In the startup class (e.g., Program.cs):
+In the startup class (e.g., [Program.cs](https://github.com/danniwezz/SqlDbMigrator/blob/main/Example/Program.cs)):
 
 ```csharp
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
