@@ -2,6 +2,7 @@
 
 SqlDbMigrator is a tool designed to simplify database migrations using a database-first approach. This project aims to streamline development by managing versioned database migrations effectively.
 
+
 ### Key Features
 
 - **Database Initialization**: Automatically creates the database if it doesn't exist.
