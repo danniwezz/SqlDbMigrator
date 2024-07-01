@@ -59,7 +59,7 @@ public static class InfrastructureExtensions
 
 In the startup class (e.g., Program.cs):
 
-```
+```csharp
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
                        ?? throw new Exception("Default SQL connection string is null");
 
