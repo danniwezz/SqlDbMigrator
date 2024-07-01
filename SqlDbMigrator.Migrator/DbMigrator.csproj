@@ -5,7 +5,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <langversion>12</langversion>
-	<RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+	  <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+    <PackageId>sql-db-migrator</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>danniwezz</Authors>
+    <Product>Sql Db Migrator</Product>
+  </PropertyGroup>
+
+  <PropertyGroup> 
+    <RepositoryUrl>https://github.com/danniwezz/SqlDbMigrator</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
