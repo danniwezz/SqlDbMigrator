@@ -3,6 +3,17 @@ name: Action to build and publish the project as a nuget package to github packa
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
       
 jobs:
   build:
