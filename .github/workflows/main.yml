@@ -35,6 +35,8 @@ jobs:
     - name: Determine Version
       id: gitversion
       uses: gittools/actions/gitversion/execute@v1.1.1
+      with:
+        additionalArguments: /log /output buildserver
 
     - name: Display GitVersion outputs
       run: |
