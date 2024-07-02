@@ -58,7 +58,7 @@ jobs:
     - name: Package
       run: >
         dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj 
-        -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+        -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release --output .
         
     - name: Publish
       run: >
