@@ -45,45 +45,58 @@ jobs:
     #   uses: actions/setup-dotnet@v4
     #   with:
     #     dotnet-version: 8.0.x
-    - name: Build and Pack NuGet package
-      run: dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
-    - name: Upload NuGet package as artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: nugetPackage
-        path: ./SqlDbMigrator.Migrator/bin/Release
+    # - name: Build and Pack NuGet package
+    #   run: dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+    # - name: Upload NuGet package as artifact
+    #   uses: actions/upload-artifact@v4
+    #   with:
+    #     name: nugetPackage
+    #     path: ./SqlDbMigrator.Migrator/bin/Release
+    - name: Build dotnet
+      run: dotnet build --configuration Release
         
-  release:
-    runs-on: self-hosted    
-    needs: build
-    # if: github.ref == 'refs/heads/master' # only run job if on the master branch   
+    - name: Package
+      run: >
+        dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj 
+        -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+        
+    - name: Publish
+      run: >
+        dotnet nuget push SqlDbMigrator.${{needs.build.outputs.Version}}.nupkg 
+        -s https://nuget.pkg.github.com/danniwezz/index.json
+        -k ${{ secrets.NUGET_PACKAGE_TOKEN }} 
+      
+  # release:
+  #   runs-on: self-hosted    
+  #   needs: build
+  #   # if: github.ref == 'refs/heads/master' # only run job if on the master branch   
     
-    steps:  
-    #Push NuGet package to GitHub packages
-    - name: Download nuget package artifact
-      uses: actions/download-artifact@v4
-      with:
-        name: nugetPackage
-    # - name: Prep packages
-    #   run: dotnet nuget add source --username danniwezz --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name SqlDbMigrator.${{steps.gitversion.outputs.SemVer}} "https://nuget.pkg.github.com/danniwezz/index.json"
-    - name: Push package to GitHub packages 
-      # if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change  
-      run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }}  --source "github"
+  #   steps:  
+  #   #Push NuGet package to GitHub packages
+  #   - name: Download nuget package artifact
+  #     uses: actions/download-artifact@v4
+  #     with:
+  #       name: nugetPackage
+  #   - name: Prep packages
+  #     run: dotnet nuget add source --username danniwezz --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name SqlDbMigrator.${{needs.build.outputs.Version}} "https://nuget.pkg.github.com/danniwezz/index.json"
+  #   - name: Push package to GitHub packages 
+  #     # if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change  
+  #     run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }}  --source "github"
     
-    #Create release
-    - name: Create Release
-      # if: 1 == 0 #needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.NUGET_PACKAGE_TOKEN }} 
-      with:
-        tag_name: ${{ needs.build.outputs.Version }}
-        release_name: SqlDbMigrator.${{ needs.build.outputs.Version }}
-    - name: Publish nuget to github
-      # if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
-      uses: ncipollo/release-action@v1
-      with:
-        tag: ${{ needs.build.outputs.Version }}
-        name: SqlDbMigrator ${{ needs.build.outputs.Version }}
-        artifacts: "nugetPackage/*"
-        token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
+  #   #Create release
+  #   - name: Create Release
+  #     # if: 1 == 0 #needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+  #     uses: actions/create-release@v1
+  #     env:
+  #       GITHUB_TOKEN: ${{ secrets.NUGET_PACKAGE_TOKEN }} 
+  #     with:
+  #       tag_name: ${{ needs.build.outputs.Version }}
+  #       release_name: SqlDbMigrator.${{ needs.build.outputs.Version }}
+  #   - name: Publish nuget to github
+  #     # if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+  #     uses: ncipollo/release-action@v1
+  #     with:
+  #       tag: ${{ needs.build.outputs.Version }}
+  #       name: SqlDbMigrator ${{ needs.build.outputs.Version }}
+  #       artifacts: "nugetPackage/*"
+  #       token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
