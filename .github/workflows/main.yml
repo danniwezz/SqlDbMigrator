@@ -23,7 +23,7 @@ jobs:
       CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }} 
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0 #fetch-depth is needed for GitVersion
         
@@ -47,8 +47,8 @@ jobs:
     #     dotnet-version: 8.0.x
     - name: Build and Pack NuGet package
       run: dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
-    - name: Upload NuGet package to GitHub
-      uses: actions/upload-artifact@v2
+    - name: Upload NuGet package as artifact
+      uses: actions/upload-artifact@v4
       with:
         name: nugetPackage
         path: ./SqlDbMigrator.Migrator/bin/Release
@@ -56,12 +56,12 @@ jobs:
   release:
     runs-on: self-hosted    
     needs: build
-    if: github.ref == 'refs/heads/master' # only run job if on the master branch   
+    # if: github.ref == 'refs/heads/master' # only run job if on the master branch   
     
     steps:  
     #Push NuGet package to GitHub packages
     - name: Download nuget package artifact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: nugetPackage
     - name: Prep packages
@@ -72,7 +72,7 @@ jobs:
     
     #Create release
     - name: Create Release
-      if: 1 == 0 #needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+      # if: 1 == 0 #needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.NUGET_PACKAGE_TOKEN }} 
