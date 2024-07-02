@@ -62,7 +62,7 @@ jobs:
         
     - name: Publish
       run: >
-        dotnet nuget push SqlDbMigrator.${{needs.build.outputs.Version}}.nupkg 
+        dotnet nuget push SqlDbMigrator.${{ steps.gitversion.outputs.SemVer }}.nupkg 
         -s https://nuget.pkg.github.com/danniwezz/index.json
         -k ${{ secrets.NUGET_PACKAGE_TOKEN }} 
       
