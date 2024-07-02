@@ -87,7 +87,7 @@ jobs:
         -s https://nuget.pkg.github.com/danniwezz/index.json 
         -k ${{ secrets.NUGET_PACKAGE_TOKEN }}
 
-    - name: Create Release
+    - name: Create Release in GitHub
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.NUGET_PACKAGE_TOKEN }}
