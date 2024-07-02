@@ -50,12 +50,13 @@ jobs:
     - name: Package
       run: >
         dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj 
-        -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release --output .
+        -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+
     - name: Upload NuGet package as artifact
       uses: actions/upload-artifact@v4
       with:
         name: nugetPackage
-        path: .
+        path: ./SqlDbMigrator.Migrator/bin/Release
  
   release:
     runs-on: self-hosted    
@@ -68,8 +69,13 @@ jobs:
       uses: actions/download-artifact@v4
       with:
         name: nugetPackage
-    - name: Prep packages
-      run: dotnet nuget add source --username danniwezz --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name SqlDbMigrator.${{needs.build.outputs.Version}} "https://nuget.pkg.github.com/danniwezz/index.json"
+    - name: Add source to nuget
+      run: >
+        dotnet nuget add source --username danniwezz 
+        --password ${{ secrets.NUGET_PACKAGE_TOKEN }} 
+        --store-password-in-clear-text 
+        --name SqlDbMigrator.${{needs.build.outputs.Version}} 
+        "https://nuget.pkg.github.com/danniwezz/index.json"
     - name: Publish package to GitHub packages
       run: >
         dotnet nuget push SqlDbMigrator.${{ steps.gitversion.outputs.SemVer }}.nupkg 

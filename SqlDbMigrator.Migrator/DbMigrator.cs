@@ -134,8 +134,10 @@ namespace SqlDbMigrator.Migrator
 
         private string GetConnectionstringWithoutCatalog(string connectionString)
         {
-            var builder = new SqlConnectionStringBuilder(connectionString);
-            builder.InitialCatalog = "";
+            var builder = new SqlConnectionStringBuilder(connectionString)
+            {
+                InitialCatalog = ""
+            };
             return builder.ConnectionString;
         }
 
@@ -145,6 +147,7 @@ namespace SqlDbMigrator.Migrator
             {
                 throw new Exception("ConnectionString is empty or null");
             }
+
             var builder = new SqlConnectionStringBuilder(connectionString);
             return builder.InitialCatalog;
         }
