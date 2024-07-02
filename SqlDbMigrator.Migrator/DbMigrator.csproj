@@ -14,6 +14,18 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
+<ItemGroup>
+        <None Include="..\LICENSE">
+            <Pack>true</Pack>
+            <PackagePath></PackagePath>
+            <Visible>True</Visible>
+        </None>
+        <None Include="..\README.md">
+            <Pack>true</Pack>
+            <PackagePath></PackagePath>
+            <Visible>True</Visible>
+        </None>
+ </ItemGroup>
   <PropertyGroup> 
     <RepositoryUrl>https://github.com/danniwezz/SqlDbMigrator</RepositoryUrl>
   </PropertyGroup>
