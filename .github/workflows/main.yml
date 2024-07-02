@@ -73,13 +73,13 @@ jobs:
       with:
         name: nugetPackage
 
-    - name: Add source to nuget
-      run: >
-        dotnet nuget add source --username danniwezz 
-        --password ${{ secrets.NUGET_PACKAGE_TOKEN }} 
-        --store-password-in-clear-text 
-        --name SqlDbMigrator 
-        "https://nuget.pkg.github.com/danniwezz/index.json"
+   # - name: Add source to nuget
+   #   run: >
+   #     dotnet nuget add source --username danniwezz 
+   #     --password ${{ secrets.NUGET_PACKAGE_TOKEN }} 
+   #     --store-password-in-clear-text 
+   #     --name SqlDbMigrator 
+   #     "https://nuget.pkg.github.com/danniwezz/index.json"
 
     - name: Publish package to GitHub packages
       run: >
