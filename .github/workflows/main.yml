@@ -47,8 +47,6 @@ jobs:
     #     dotnet-version: 8.0.x
     - name: Build and Pack NuGet package
       run: dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
-    - name: Print output
-      run: echo ls bin/Release
     - name: Upload NuGet package to GitHub
       uses: actions/upload-artifact@v2
       with:
