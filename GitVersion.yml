@@ -4,24 +4,25 @@ branches:
     regex: '^main$'
     tag: ''
     increment: Minor
+    is-mainline: true
   develop:
     regex: '^develop'
     tag: ''
     increment: Patch
   feature:
-    regex: '^feature'
+    regex: '^feature/.*$'
     tag: ''
     increment: Patch
   hotfix:
-    regex: '^hotfix'
+    regex: '^hotfix/.*$'
     tag: ''
     increment: Patch
   release:
-    regex: '^release'
+    regex: '^release/.*$'
     tag: ''
     increment: Patch
   pull-request:
-    regex: '^pull-request'
+    regex: '^(pull-request|pr)/.*$'
     tag: ''
     increment: Patch
 ignore:
