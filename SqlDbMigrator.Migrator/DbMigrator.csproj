@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <langversion>12</langversion>
 	  <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-    <PackageId>sql-db-migrator</PackageId>
+    <PackageId>SqlDbMigrator</PackageId>
     <Version>1.0.0</Version>
     <Authors>danniwezz</Authors>
     <Product>Sql Db Migrator</Product>
