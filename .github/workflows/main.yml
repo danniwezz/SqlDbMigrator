@@ -1,4 +1,4 @@
-name: Action to build and publish the project as a nuget package to github package registry
+name: Build and Publish NuGet Package
 
 on:
   push:
@@ -14,79 +14,80 @@ on:
           - info
           - warning
           - debug
-      
+
 jobs:
   build:
     runs-on: self-hosted
-    outputs: 
+    outputs:
       Version: ${{ steps.gitversion.outputs.SemVer }}
-      CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }} 
+      CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}
 
     steps:
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0 #fetch-depth is needed for GitVersion
-        
-    #Install and calculate the new version with GitVersion  
+        fetch-depth: 0 # fetch-depth is needed for GitVersion
+
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v1.1.1
       with:
         versionSpec: 5.x
+
     - name: Determine Version
+      id: gitversion
       uses: gittools/actions/gitversion/execute@v1.1.1
-      id: gitversion # step id used as reference for output values
+
     - name: Display GitVersion outputs
       run: |
         echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
         echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
-    # Use only for online builds not [self-hosted]
-    #Build/pack the project
+
     # - name: Setup .NET
     #   uses: actions/setup-dotnet@v4
     #   with:
     #     dotnet-version: 8.0.x
+
     - name: Build dotnet
       run: dotnet build --configuration Release
+
     - name: Package
       run: >
         dotnet pack SqlDbMigrator.Migrator/DbMigrator.csproj 
-        -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
+        -p:Version=${{ steps.gitversion.outputs.SemVer }} -c Release
 
     - name: Upload NuGet package as artifact
       uses: actions/upload-artifact@v4
       with:
         name: nugetPackage
-        path: ./SqlDbMigrator.Migrator/bin/Release
- 
+        path: ./SqlDbMigrator.Migrator/bin/Release/*.nupkg
+
   release:
-    runs-on: self-hosted    
+    runs-on: self-hosted
     needs: build
-    # if: github.ref == 'refs/heads/master' # only run job if on the master branch   
-    
-    steps:  
-    #Push NuGet package to GitHub packages
-    - name: Download nuget package artifact
+
+    steps:
+    - name: Download NuGet package artifact
       uses: actions/download-artifact@v4
       with:
         name: nugetPackage
+
     - name: Add source to nuget
       run: >
         dotnet nuget add source --username danniwezz 
         --password ${{ secrets.NUGET_PACKAGE_TOKEN }} 
         --store-password-in-clear-text 
-        --name SqlDbMigrator.${{needs.build.outputs.Version}} 
+        --name SqlDbMigrator 
         "https://nuget.pkg.github.com/danniwezz/index.json"
+
     - name: Publish package to GitHub packages
       run: >
-        dotnet nuget push SqlDbMigrator.${{ steps.gitversion.outputs.SemVer }}.nupkg 
-        -s https://nuget.pkg.github.com/danniwezz/index.json
-        -k ${{ secrets.NUGET_PACKAGE_TOKEN }} 
-    #Create release
+        dotnet nuget push ./SqlDbMigrator.Migrator/bin/Release/SqlDbMigrator.${{ needs.build.outputs.Version }}.nupkg 
+        -s https://nuget.pkg.github.com/danniwezz/index.json 
+        -k ${{ secrets.NUGET_PACKAGE_TOKEN }}
+
     - name: Create Release
       uses: actions/create-release@v1
       env:
-        GITHUB_TOKEN: ${{ secrets.NUGET_PACKAGE_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.NUGET_PACKAGE_TOKEN }}
       with:
-        tag_name: ${{ steps.gitversion.outputs.SemVer }}
-        release_name: SqlDbMigrator.${{ steps.gitversion.outputs.SemVer }}
-    
+        tag_name: ${{ needs.build.outputs.Version }}
+        release_name: SqlDbMigrator.${{ needs.build.outputs.Version }}
