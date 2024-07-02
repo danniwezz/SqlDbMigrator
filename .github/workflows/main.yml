@@ -53,7 +53,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: nugetPackage
-        path: bin/Release
+        path: ./SqlDbMigrator.Migrator/bin/Release
         
   release:
     runs-on: self-hosted    
