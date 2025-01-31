@@ -11,6 +11,11 @@ namespace SqlDbMigrator.Migrator
         private readonly ILogger<DbMigrator> _logger;
         private List<Migration> _migrations = new List<Migration>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DbMigrator"/> class with the specified logger.
+        /// </summary>
+        /// <param name="logger">The logger used for logging migration operations and errors.</param>
+
         public DbMigrator(ILogger<DbMigrator> logger)
         {
             _logger = logger;
