@@ -20,7 +20,7 @@ branches:
   release:
     regex: '^release/.*$'
     tag: ''
-    increment: Patch
+    increment: Major
   pull-request:
     regex: '^(pull-request|pr)/.*$'
     tag: ''
